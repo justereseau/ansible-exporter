@@ -6,6 +6,7 @@
     hostname: snmp_exporter
     image: snmp_exporter
     restart_policy: always
+    dns_servers: "{{ snmp_exporter_dns }}"
     ports:
       - "{{ snmp_exporter_web_listen_address }}:{{ snmp_exporter_web_listen_address }}"
     volumes:
@@ -21,6 +22,7 @@
     hostname: blackbox_exporter
     image: blackbox_exporter
     restart_policy: always
+    dns_servers: "{{ blackbox_exporter_dns }}"
     ports:
       - "{{ blackbox_exporter_web_listen_address }}:{{ blackbox_exporter_web_listen_address }}"
     volumes:
@@ -36,6 +38,7 @@
     hostname: ping_exporter
     image: ping_exporter
     restart_policy: always
+    dns_servers: "{{ ping_exporter_dns }}"
     ports:
       - "{{ ping_exporter_web_listen_address }}:{{ ping_exporter_web_listen_address }}"
   tags: molecule-notest

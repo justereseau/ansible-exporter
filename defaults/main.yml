@@ -7,6 +7,9 @@ blackbox_exporter_version: 0.14.0
 blackbox_exporter_web_listen_address: "9115"
 blackbox_exporter_cli_flags: {}
 blackbox_exporter_configuration_modules: "blackbox.yml"
+snmp_exporter_dns:
+  - 1.1.1.1
+  - 8.8.8.8
 
 # Default for snmp
 snmp_exporter_scale: 4
@@ -14,8 +17,13 @@ snmp_exporter_version: 0.15.0
 snmp_exporter_web_listen_address: "9116"
 snmp_exporter_config_file: "snmp.yml"
 snmp_community_password: "BigPassword"
+blackbox_exporter_dns:
+  - 1.1.1.1
+  - 8.8.8.8
 
 # Default for ping
 ping_exporter_scale: 2
 ping_exporter_web_listen_address: "9117"
-ping_exporter_dns: {1.1.1.1, 8.8.8.8}
+ping_exporter_dns:
+  - 1.1.1.1
+  - 8.8.8.8

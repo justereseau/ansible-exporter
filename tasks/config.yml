@@ -1,20 +1,25 @@
 ---
+- name: Create Exporter files directories
+  file:
+    path: "{{ exporter_root_path }}/{{ item.name }}/configs"
+    mode: 0755
+    recurse: true
+    state: directory
+  with_items:
+    - "{{ exporters }}"
 
 - name: Push dockerfiles
   template:
-    src: "{{ item }}"
-    dest: "{{ exporter_root_path }}/Dockerfiles/{{ item | regex_replace('.j2','') }}"
+    src: "exporter_dockerfile.j2"
+    dest: "{{ exporter_root_path }}/{{ item.name }}/dockerfile"
     mode: 0755
-  with_items:
-    - snmp_exporter.j2
-    - blackbox_exporter.j2
-    - ping_exporter.j2
+  with_items: "{{ exporters }}"
 
 - name: Push config
   template:
-    src: "{{ item }}"
-    dest: "{{ exporter_root_path }}/Configs/"
+    src: "{{ item.1.local_path }}"
+    dest: "{{ exporter_root_path }}/{{ item.0.name }}/configs/{{ item.1.local_path | basename }}"
     mode: 0755
-  with_items:
-    - "{{ snmp_exporter_config_file }}"
-    - "{{ blackbox_exporter_configuration_modules }}"
+  with_subelements:
+    - "{{ exporters }}"
+    - volumes_files

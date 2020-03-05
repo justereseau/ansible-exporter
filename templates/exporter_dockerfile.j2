@@ -1,0 +1,3 @@
+# Manage by ansible
+FROM {{ item.docker_image }}:{{ item.docker_tag }}
+EXPOSE {{ item.docker_listener_port }}

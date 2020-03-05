@@ -1,46 +1,30 @@
 ---
-- name: Create the snmp_exporter container.
-  docker_container:
-    recreate: true
-    name: snmp_exporter
-    hostname: snmp_exporter
-    image: snmp_exporter
-    restart_policy: always
-    dns_servers: "{{ snmp_exporter_dns }}"
-    ports:
-      - "{{ snmp_exporter_web_listen_address }}:{{ snmp_exporter_web_listen_address }}"
-    volumes:
-      - "{{ exporter_root_path }}/Configs/snmp.yml:/etc/snmp_exporter/snmp.yml:ro"
-  tags: molecule-notest
-  changed_when: false
-  become: true
+- debug: msg="Append list to list, or merge two lists"
 
-- name: Create the blackbox_exporter container.
-  docker_container:
-    recreate: true
-    name: blackbox_exporter
-    hostname: blackbox_exporter
-    image: blackbox_exporter
-    restart_policy: always
-    dns_servers: "{{ blackbox_exporter_dns }}"
-    ports:
-      - "{{ blackbox_exporter_web_listen_address }}:{{ blackbox_exporter_web_listen_address }}"
-    volumes:
-      - "{{ exporter_root_path }}/Configs/blackbox.yml:/etc/blackbox_exporter/config.yml:ro"
-  tags: molecule-notest
-  changed_when: false
-  become: true
+- name: Fix needed item vars.
+  set_fact:
+    exporter_name: "{{ item.name }}"
 
-- name: Create the ping_exporter container.
+- name: Init List
+  set_fact:
+    volumes_to_add: [] 
+
+- name: Append List
+  set_fact:
+    volumes_to_add: "{{ volumes_to_add + [ exporter_root_path + '/' + exporter_name + '/configs/' + item.local_path | basename + ':' + item.docker_path + ':ro' ] }}"
+  with_items: "{{ item.volumes_files }}"
+
+- name: "Create the {{ exporter_name }} container."
   docker_container:
     recreate: true
-    name: ping_exporter
-    hostname: ping_exporter
-    image: ping_exporter
+    name: "{{ item.name }}"
+    hostname: "{{ item.name }}"
+    image: "{{ item.name }}"
     restart_policy: always
-    dns_servers: "{{ ping_exporter_dns }}"
+    dns_servers: "{{ item.dns }}"
     ports:
-      - "{{ ping_exporter_web_listen_address }}:{{ ping_exporter_web_listen_address }}"
+      - "{{ item.docker_listener_port }}:{{ item.docker_listener_port }}"
+    volumes: "{{ volumes_to_add }}"
   tags: molecule-notest
   changed_when: false
   become: true

@@ -1,17 +1,13 @@
 ---
-
 - name: Build docker images
   docker_image:
     build:
-      path: "{{ exporter_root_path }}/Dockerfiles"
+      path: "{{ exporter_root_path }}/{{ item.name }}"
       pull: false
-      dockerfile: "{{ item }}"
-    name: "{{ item }}"
+      dockerfile: "dockerfile"
+    name: "{{ item.name }}"
     tag: latest
     source: build
   become: yes
   tags: molecule-notest
-  with_items:
-    - snmp_exporter
-    - blackbox_exporter
-    - ping_exporter
+  with_items: "{{ exporters }}"

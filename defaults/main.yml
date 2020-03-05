@@ -1,29 +1,43 @@
 ---
-exporter_root_path: "/opt/exporter"
+exporter_root_path: "/opt/exporters"
 
-# Default for blackbox
-blackbox_exporter_scale: 3
-blackbox_exporter_version: 0.14.0
-blackbox_exporter_web_listen_address: "9115"
-blackbox_exporter_cli_flags: {}
-blackbox_exporter_configuration_modules: "blackbox.yml"
-snmp_exporter_dns:
+exporter_dns:
   - 1.1.1.1
   - 8.8.8.8
 
-# Default for snmp
-snmp_exporter_scale: 4
-snmp_exporter_version: 0.15.0
-snmp_exporter_web_listen_address: "9116"
-snmp_exporter_config_file: "snmp.yml"
-snmp_community_password: "BigPassword"
-blackbox_exporter_dns:
-  - 1.1.1.1
-  - 8.8.8.8
+exporters:
+  - name: junos_exporter
+    scale: 2
+    docker_image: czerwonk/junos_exporter
+    docker_tag: v0.9.5
+    docker_listener_port: 9326
+    volumes_files: []
+    dns: "{{ exporter_dns }}"
 
-# Default for ping
-ping_exporter_scale: 2
-ping_exporter_web_listen_address: "9117"
-ping_exporter_dns:
-  - 1.1.1.1
-  - 8.8.8.8
+  - name: blackbox_exporter
+    scale: 2
+    docker_image: prom/blackbox-exporter
+    docker_tag: v0.14.0
+    docker_listener_port: 9115
+    volumes_files:
+      - local_path: blackbox.yml
+        docker_path: /etc/blackbox_exporter/config.yml
+    dns: "{{ exporter_dns }}"
+
+  - name: ping_exporter
+    scale: 2
+    docker_image: gperiard/ping-exporter
+    docker_tag: v0.14.0
+    docker_listener_port: 9117
+    volumes_files: []
+    dns: "{{ exporter_dns }}"
+
+  - name: snmp_exporter
+    scale: 2
+    docker_image: prom/snmp-exporter
+    docker_tag: v0.15.0
+    docker_listener_port: 9116
+    volumes_files:
+      - local_path: snmp.yml
+        docker_path: /etc/snmp_exporter/snmp.yml
+    dns: "{{ exporter_dns }}"

@@ -1,15 +1,4 @@
 ---
-- name: Create Exporter files directories
-  file:
-    path: "{{ item }}"
-    mode: 0755
-    recurse: true
-    state: directory
-  with_items:
-    - "{{ exporter_root_path }}"
-    - "{{ exporter_root_path }}/Dockerfiles"
-    - "{{ exporter_root_path }}/Configs"
-
 - name: Set config files
   include_tasks: config.yml
 
@@ -18,3 +7,4 @@
 
 - name: Running Docker exporter images
   include_tasks: running.yml
+  with_items: "{{ exporters }}"

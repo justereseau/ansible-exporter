@@ -11,6 +11,7 @@ exporters:
     docker_image: czerwonk/junos_exporter
     docker_tag: v0.9.5
     docker_listener_port: 9326
+    docker_cmd: ./junos_exporter -config.file=/config.yml
     volumes_files: []
     dns: "{{ exporter_dns }}"
 

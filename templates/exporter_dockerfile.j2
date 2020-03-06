@@ -1,3 +1,6 @@
 # Manage by ansible
 FROM {{ item.docker_image }}:{{ item.docker_tag }}
+{% if item.docker_cmd is defined %}
+CMD {{ item.docker_cmd }}
+{% endif %}
 EXPOSE {{ item.docker_listener_port }}

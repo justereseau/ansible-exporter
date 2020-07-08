@@ -1,4 +1,4 @@
-Prometheus Exporters
+Prometheus Exporters [![Build Status](https://travis-ci.org/justereseau/ansible-exporter.svg?branch=master)](https://travis-ci.org/justereseau/ansible-exporter)
 =========
 
 Deploy a lot of different Prometheus Exporters

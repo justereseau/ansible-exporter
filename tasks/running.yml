@@ -25,6 +25,7 @@
     ports:
       - "{{ item.docker_listener_port }}:{{ item.docker_listener_port }}"
     volumes: "{{ volumes_to_add }}"
+    env: "{{ item.env | default({}) }}"
   tags: molecule-notest
   changed_when: false
   become: true

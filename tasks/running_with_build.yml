@@ -23,7 +23,7 @@
 
 - name: Init List
   set_fact:
-    volumes_to_add: [] 
+    volumes_to_add: []
 
 - name: Append List
   set_fact:

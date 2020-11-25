@@ -2,9 +2,12 @@
 - name: Set config files
   include_tasks: config.yml
 
-- name: Build docker images
-  include_tasks: build_images.yml
+- name: Running Docker exporter images - with image build
+  include_tasks: running_with_build.yml
+  when: item.create_image | default( false )
+  with_items: "{{ exporters }}"
 
 - name: Running Docker exporter images
-  include_tasks: running.yml
+  include_tasks: running_only.yml
+  when: not item.create_image | default( false )
   with_items: "{{ exporters }}"

@@ -1,0 +1,29 @@
+---
+- name: Fix needed item vars.
+  set_fact:
+    exporter_name: "{{ item.name }}"
+
+- name: Init List
+  set_fact:
+    volumes_to_add: []
+
+- name: Append List
+  set_fact:
+    volumes_to_add: "{{ volumes_to_add + [ exporter_root_path + '/' + exporter_name + '/configs/' + item.local_path | basename + ':' + item.docker_path + ':ro' ] }}"
+  with_items: "{{ item.volumes_files }}"
+
+- name: "Create the {{ item.name }} container."
+  docker_container:
+    recreate: true
+    name: "{{ item.name }}"
+    hostname: "{{ item.name }}"
+    image: "{{ item.docker_image }}:{{ item.docker_tag }}"
+    restart_policy: always
+    dns_servers: "{{ item.dns }}"
+    ports:
+      - "{{ item.docker_listener_port }}:{{ item.docker_listener_port }}"
+    volumes: "{{ volumes_to_add }}"
+    env: "{{ item.env | default({}) }}"
+  tags: molecule-notest
+  changed_when: false
+  become: true

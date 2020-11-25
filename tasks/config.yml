@@ -8,13 +8,6 @@
   with_items:
     - "{{ exporters }}"
 
-- name: Push dockerfiles
-  template:
-    src: "exporter_dockerfile.j2"
-    dest: "{{ exporter_root_path }}/{{ item.name }}/dockerfile"
-    mode: 0755
-  with_items: "{{ exporters }}"
-
 - name: Push config
   template:
     src: "{{ item.1.local_path }}"
